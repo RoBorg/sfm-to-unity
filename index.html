@@ -1,0 +1,424 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+        crossorigin="anonymous">
+    <style type="text/css">
+        figure.figure {
+            display: block;
+        }
+    </style>
+    <title>Importing SFM Models into Unity</title>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <h1 class="navbar-brand">Importing SFM Models into Unity</h1>
+    </nav>
+    <div class="container">
+        <div class="row">
+            <div class="col-sm">
+                <h2 id="contents">Contents</h2>
+                <ol>
+                    <li>
+                        <a href="#introduction">Introduction</a>
+                    </li>
+                    <li>
+                        <a href="#software-requirements">Software Requirements</a>
+                    </li>
+                    <li>
+                        <a href="#installation">Installation</a>
+                    </li>
+                    <li>
+                        <a href="#convert-the-model">Convert the Model</a>
+                    </li>
+                    <li>
+                        <a href="#convert-the-textures">Convert the Textures</a>
+                    </li>
+                    <li>
+                        <a href="#load-into-blender">Load into Blender</a>
+                    </li>
+                    <li>
+                        <a href="#fix-skeleton">Fix the Skeleton (Optional)</a>
+                    </li>
+                    <li>
+                        <a href="#export-to-unity">Export to Unity</a>
+                    </li>
+                    <li>
+                        <a href="#load-into-unity">Load into Unity</a>
+                    </li>
+                </ol>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm">
+                <h2 id="introduction">Introduction</h2>
+                <p>These instructions will tell you how to import Source Film Maker (SFM) models into Unity, through Blender.</p>
+                <p>
+                    They are based primarily off the now-dead instructions by
+                    <a href="http://www.digitalzombie.de/2016/02/13/how-to-use-sfm-models-in-unity/" target="_blank">Digitalzombie</a>.
+                </p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm">
+                <h2 id="software-requirements">Software Requirements</h2>
+                <ul>
+                    <li>
+                        Unity -
+                        <a href="https://unity3d.com/get-unity/" target="_blank">download</a>.
+                    </li>
+                    <li>
+                        Blender -
+                        <a href="https://www.blender.org/download/" target="_blank">download</a>. Used to convert 3d models to FBX format.
+                    </li>
+                    <li>
+                        Blender Source Tools -
+                        <a href="http://steamreview.org/BlenderSourceTools/" target="_blank">download</a>. Used to load decompiled SFM files into Blender.
+                    </li>
+                    <li>
+                        BoneFix -
+                        <a href="https://smutba.se/project/59/" target="_blank">download</a> (NSFW website). Optional - used to fix skeletons.
+                    </li>
+                    <li>
+                        Crowbar (ZIP Version) -
+                        <a href="http://steamcommunity.com/groups/CrowbarTool" target="_blank">download</a>. Used to decompile SFM files.
+                    </li>
+                    <li>
+                        VTFEdit -
+                        <a href="http://nemesis.thewavelength.net/index.php?p=41" target="_blank">download</a>. Used to convert VTF textures to PNG.
+                    </li>
+                </ul>
+
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm">
+                <h2 id="installation">Installation</h2>
+                <h3> Installing Unity &amp; Blender</h3>
+                <p>Install Unity and Blender as normal - the default options should be fine.</p>
+
+                <h3>Installing Blender Source Tools</h3>
+                <ol>
+                    <li>
+                        Load Blender and click on the
+                        <b>File</b> menu and choose
+                        <b>User Preferences</b>, or press
+                        <kbd>Ctrl + Alt + U</kbd>.
+                    </li>
+                    <li>
+                        Click the
+                        <b>Addons</b> tab then click the
+                        <b>Install from File</b> button.
+
+                        <figure class="figure">
+                            <a href="images/blender-user-preferences.png">
+                                <img src="images/blender-user-preferences.png" class="figure-img img-fluid rounded" alt="Screenshot">
+                            </a>
+                            <figcaption class="figure-caption">Install from File</figcaption>
+                        </figure>
+                    </li>
+                    <li>
+                        Locate the blender_source_tools.xxx.zip file you downloaded earlier and click the
+                        <b>Install from File</b> button.
+
+                        <figure class="figure">
+                            <a href="images/blender-select-plugin-file.png">
+                                <img src="images/blender-select-plugin-file.png" class="figure-img img-fluid rounded" alt="Screenshot">
+                            </a>
+                            <figcaption class="figure-caption">Select Plugin File</figcaption>
+                        </figure>
+                    </li>
+                    <li>
+                        Check the plugin is active by typing "source" into the addon search box, and making sure the checkbox is checked next to
+                        <b>Import-Export: Blender Source Tools</b>.
+
+                        <figure class="figure">
+                            <a href="images/blender-plugin-active.png">
+                                <img src="images/blender-plugin-active.png" class="figure-img img-fluid rounded" alt="Screenshot">
+                            </a>
+                            <figcaption class="figure-caption">Ensure Plugin is Active</figcaption>
+                        </figure>
+                    </li>
+                </ol>
+
+                <h3>Installing BoneFix</h3>
+                <ol>
+                    <li>
+                        Create a folder to store the scripts, and move
+                        <b>BoneFix.py</b> into it.
+                    </li>
+                    <li>
+                        Load Blender and click on the
+                        <b>File</b> menu and choose
+                        <b>User Preferences</b>, or press
+                        <kbd>Ctrl + Alt + U</kbd>.
+                    </li>
+                    <li>
+                        Click the
+                        <b>File</b> tab and set the
+                        <b>Scripts</b> folder to where you placed
+                        <b>BoneFix.py</b>, then click the
+                        <b>Save User Settings</b> button.
+
+                        <figure class="figure">
+                            <a href="images/blender-user-scripts.png">
+                                <img src="images/blender-user-scripts.png" class="figure-img img-fluid rounded" alt="Screenshot">
+                            </a>
+                            <figcaption class="figure-caption">User Scripts Folder</figcaption>
+                        </figure>
+                    </li>
+                </ol>
+
+                <h3>Installing Crowbar &amp; VTFEdit</h3>
+                <p>Extract the each zip file into its own folder.</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm">
+                <h2 id="convert-the-model">Convert the Model</h2>
+                <p>
+                    Your SFM file will probably be a zip file - extract it and find the folder with the
+                    <b>.mdl</b> file you want to use.
+                </p>
+                <p>
+                    Before starting, it's best to create a new folder to store your converted model and textures in.
+                </p>
+
+                <ol>
+                    <li>
+                        Load Crowbar and on the
+                        <b>Decompile</b> tab, open your
+                        <b>.mdl</b> file.
+
+                        <figure class="figure">
+                            <a href="images/crowbar-choose-file.png">
+                                <img src="images/crowbar-choose-file.png" class="figure-img img-fluid rounded" alt="Screenshot">
+                            </a>
+                            <figcaption class="figure-caption">Choose your File</figcaption>
+                        </figure>
+                    </li>
+                    <li>
+                        Click the
+                        <b>Full path</b> radio button and choose folder you want to put the decompiled files in, then click
+                        the
+                        <b>Decompile</b> button. You can leave all the options at their default values.
+
+                        <figure class="figure">
+                            <a href="images/crowbar-decompile.png">
+                                <img src="images/crowbar-decompile.png" class="figure-img img-fluid rounded" alt="Screenshot">
+                            </a>
+                            <figcaption class="figure-caption">Decompile the Model</figcaption>
+                        </figure>
+                    </li>
+                    <li>
+                        When decompilation is complete your model will be ready to import into Blender, but the textures need converting separately.
+                    </li>
+                </ol>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm">
+                <h2 id="convert-the-textures">Convert the Textures</h2>
+                <ol>
+                    <li>
+                        Open VTFEdit and click the
+                        <b>Tools</b> menu then choose
+                        <b>Convert Folder</b>.
+                    </li>
+                    <li>
+                        Select the input folder that has the
+                        <b>.vtf</b> and
+                        <b>.vmf</b> files in it. Select an output folder for the
+                        <b>.png</b> files - use the folder you created for the decompiled model. Click the
+                        <b>Convert</b> button to convert the textures.
+
+                        <figure class="figure">
+                            <a href="images/vtfedit-convert.png">
+                                <img src="images/vtfedit-convert.png" class="figure-img img-fluid rounded" alt="Screenshot">
+                            </a>
+                            <figcaption class="figure-caption">Decompile the Textures</figcaption>
+                        </figure>
+                    </li>
+                </ol>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm">
+                <h2 id="load-into-blender">Load into Blender</h2>
+                <ol>
+                    <li>
+                        Open Blender and delete the Camera, Cube and Lamp objects.
+                    </li>
+                    <li>
+                        Click the
+                        <b>File</b> menu and go to the
+                        <b>Import</b> submenu and choose
+                        <b>Source Engine (.smd, .vta, .dmx .qc)</b>.
+
+                        <figure class="figure">
+                            <a href="images/blender-import-menu.png">
+                                <img src="images/blender-import-menu.png" class="figure-img img-fluid rounded" alt="Screenshot">
+                            </a>
+                            <figcaption class="figure-caption">Blender Import Menu</figcaption>
+                        </figure>
+                    </li>
+                    <li>
+                        Locate the folder you extrated the model into and select the
+                        <b>*.qc</b> file. Click the
+                        <b>Import SMD/VTA, DMX, QC</b> button. This can take quite a while - don't worry if Blender seems unresponsive.
+
+                        <figure class="figure">
+                            <a href="images/blender-import.png">
+                                <img src="images/blender-import.png" class="figure-img img-fluid rounded" alt="Screenshot">
+                            </a>
+                            <figcaption class="figure-caption">Blender Import *.qc File</figcaption>
+                        </figure>
+                    </li>
+                </ol>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm">
+                <h2 id="fix-skeleton">Fix the Skeleton (Optional)</h2>
+                <p>This is an optional step - follow it if your model has a skeleton you want to use in Unity</p>
+                <ol>
+                    <li>
+                        Click the mode tool and select
+                        <b>Object Mode</b> then right-click on any bone to select the skeleton.
+
+                        <figure class="figure">
+                            <a href="images/blender-select-skeleton.png">
+                                <img src="images/blender-select-skeleton.png" class="figure-img img-fluid rounded" alt="Screenshot">
+                            </a>
+                            <figcaption class="figure-caption">Select the Skeleton</figcaption>
+                        </figure>
+                    </li>
+                    <li>
+                        Go to the Python console by clicking the window button and selecting
+                        <b>Python Console</b>. Note - this was called
+                        <b>Scripts</b> in older versions of Blender.
+
+                        <figure class="figure">
+                            <a href="images/blender-python-console.png">
+                                <img src="images/blender-python-console.png" class="figure-img img-fluid rounded" alt="Screenshot">
+                            </a>
+                            <figcaption class="figure-caption">Go to the Python Console</figcaption>
+                        </figure>
+                    </li>
+                    <li>
+                        Run the script using the following code (don't forget to change the script path!):
+                        <br>
+                        <b>exec(open("c:\\users\\RoBorg\\Documents\\Blender Scripts\\BoneFix.py").read())</b>
+                        <br>
+                        <br> If you're using Python 2, you can use this instead:
+                        <br>
+                        <b>execfile("c:\\users\\RoBorg\\Documents\\Blender Scripts\\BoneFix.py")</b>
+                    </li>
+                </ol>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm">
+                <h2 id="export-to-unity">Export to Unity</h2>
+                <ol>
+                    <li>
+                        Click on the
+                        <b>File</b> menu then choose the
+                        <b>Export</b> and click on
+                        <b>FBX (.fbx)</b>.
+
+                        <figure class="figure">
+                            <a href="images/blender-export-menu.png">
+                                <img src="images/blender-export-menu.png" class="figure-img img-fluid rounded" alt="Screenshot">
+                            </a>
+                            <figcaption class="figure-caption">Blender Export Menu</figcaption>
+                        </figure>
+                    </li>
+                    <li>
+                        Type a filename and click the
+                        <b>Export FBX</b> button.
+
+                        <figure class="figure">
+                            <a href="images/blender-export.png">
+                                <img src="images/blender-export.png" class="figure-img img-fluid rounded" alt="Screenshot">
+                            </a>
+                            <figcaption class="figure-caption">Blender Export FBX</figcaption>
+                        </figure>
+                    </li>
+                </ol>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm">
+                <h2 id="load-into-unity">Load into Unity</h2>
+                <ol>
+                    <li>
+                        Load Unity and open your project or create a new one.
+                    </li>
+                    <li>
+                        In the Project window, create a new folder for your model and under that folder create two more, called
+                        <b>Materials</b> and
+                        <b>Textures</b>.
+                    </li>
+                    <li>
+                        Drag-drop your
+                        <b>.fbx</b> file into your model folder, and the
+                        <b>*.png</b> files into the
+                        <b>Textures</b> folder
+                    </li>
+                    <li>
+                        Export the materials from the model by selecting the model and going to the
+                        <b>Inspector</b> and choosing the
+                        <b>Materials</b> tab. Make sure the
+                        <b>Import Materials</b> checkbox is checked, then click the
+                        <b>Extract Materials</b> button. Choose the
+                        <b>Materials</b> folder you created previously.
+
+                        <figure class="figure">
+                            <a href="images/unity-extract-materials.png">
+                                <img src="images/unity-extract-materials.png" class="figure-img img-fluid rounded" alt="Screenshot">
+                            </a>
+                            <figcaption class="figure-caption">Extracting Materials</figcaption>
+                        </figure>
+                    </li>
+                    <li>
+                        Assign the correct texture to each material by going to the
+                        <b>Materials</b> folder in the
+                        <b>Project</b> windows and clicking on each material in turn. Click the circle icon next to
+                        <b>Albedo</b> and choose the correct texture from the
+                        <b>Textures</b> folder - it should have the same name as the material. Note that not all materials will
+                        have a texture - they may just be solid colours.
+                    </li>
+                    <li>
+                        Remove the colour cast from your materials by selecting all of them in the
+                        <b>Project</b> window then clicking the colour swatch next to
+                        <b>Albedo</b> and set it to white.
+                    </li>
+                    <li>
+                        Go to the
+                        <b>Textures</b> folder and select all the textures, then in the
+                        <b>Inspector</b> check the
+                        <b>Alpha Is Transparency</b> checkbox and click the
+                        <b>Apply</b> button.
+
+                        <figure class="figure">
+                            <a href="images/unity-transparency.png">
+                                <img src="images/unity-transparency.png" class="figure-img img-fluid rounded" alt="Screenshot">
+                            </a>
+                            <figcaption class="figure-caption">Texture Transparency</figcaption>
+                        </figure>
+                    </li>
+                    <li>
+                        You can now add the model to your scene!
+                    </li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
