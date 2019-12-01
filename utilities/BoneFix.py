@@ -124,7 +124,7 @@ for bone in edit_bones:
     except ExitOK:
         print("OK")
 
-    bpy.context.scene.update()
+    bpy.context.view_layer.update()
 
 # Update bone tail positions
 edit_bones = bpy.context.object.data.edit_bones
@@ -138,9 +138,9 @@ for bone in edit_bones:
     parentbone.tail = bone.head
     bone.use_connect = True
 
-    bpy.context.scene.update()
+    bpy.context.view_layer.update()
 
 # Finish off
 bpy.ops.object.posemode_toggle()
 bpy.context.object.data.show_bone_custom_shapes = False
-bpy.context.object.data.use_auto_ik = True
+bpy.types.Pose.use_auto_ik = True
